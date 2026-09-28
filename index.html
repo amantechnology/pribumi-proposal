@@ -279,7 +279,7 @@
   <div class="label">AWS Account Handover</div>
   <h1 style="max-width:700px; margin-top:10px;">Pribumi E-Learning<br>Platform</h1>
   <p class="subtitle" style="max-width:520px; margin-top:14px;">
-    Infrastructure assessment, migration plan, and business proposal for transferring <strong style="color:var(--text)">elearning.pribumi.my</strong> to a new AWS organisation.
+    Infrastructure assessment and business proposal for handing over AWS account <strong style="color:var(--text)">396913716883</strong> — all resources stay in place, ownership transfers to the new organisation.
   </p>
   <div class="divider"></div>
   <div class="cover-meta">
@@ -455,120 +455,48 @@ dataroot= /var/www/moodledata</div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 5 — HANDOVER BLOCKERS
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 5 — HANDOVER REQUIREMENTS
 ═══════════════════════════════════════════════════════ -->
 <section class="slide" id="s5">
-  <div class="label">Migration Blockers</div>
-  <h2>5 Blockers Before Handover Can Complete</h2>
+  <div class="label">Handover Requirements</div>
+  <h2>What Needs to Change Before Handover</h2>
+  <p style="margin-bottom:20px;">All AWS resources stay in account <span class="mono">396913716883</span>. Only ownership and access changes.</p>
   <div style="display:flex; flex-direction:column; gap:10px;">
-    <div class="blocker" style="border-color:rgba(248,81,73,0.4);">
-      <div class="blocker-icon">🔴</div>
-      <div style="flex:1;">
-        <div class="blocker-title">Marketplace AMI is account-bound</div>
-        <div class="blocker-sub">AMI <span class="mono">ami-0f02faea62194c526</span> (product <span class="mono">9m3tff1jneeyfykcbnsnmkbz6</span>) cannot be shared to another account. New owner must subscribe to the Marketplace product or redeploy from a base AMI.</div>
-      </div>
-      <span class="badge badge-red">BLOCKER</span>
-    </div>
-    <div class="blocker" style="border-color:rgba(248,81,73,0.4);">
-      <div class="blocker-icon">🔴</div>
-      <div style="flex:1;">
-        <div class="blocker-title">RDS encrypted with AWS-managed KMS key (non-exportable)</div>
-        <div class="blocker-sub">Key <span class="mono">347fc705</span> is account-bound. Must create a Customer Managed Key (CMK), copy RDS snapshot re-encrypted with CMK, then share to new account.</div>
-      </div>
-      <span class="badge badge-red">BLOCKER</span>
-    </div>
-    <div class="blocker" style="border-color:rgba(248,81,73,0.4);">
-      <div class="blocker-icon">🔴</div>
-      <div style="flex:1;">
-        <div class="blocker-title">Account is member of AWS Organization o-jktkfxsva8</div>
-        <div class="blocker-sub">Must be removed by amancloud.com master account (269031123284). SSO roles, Control Tower SCPs, and org CloudTrail all stop upon removal. Requires a standalone period before joining new org.</div>
-      </div>
-      <span class="badge badge-red">BLOCKER</span>
-    </div>
-    <div class="blocker">
-      <div class="blocker-icon">🟡</div>
-      <div style="flex:1;">
-        <div class="blocker-title">ACM certificate is account-bound</div>
-        <div class="blocker-sub">Certificate <span class="mono">21aabf8a-...</span> for elearning.pribumi.my cannot be transferred. New cert must be issued in new account via DNS validation.</div>
-      </div>
-      <span class="badge badge-yellow">REQUIRES ACTION</span>
-    </div>
-    <div class="blocker">
-      <div class="blocker-icon">🟡</div>
-      <div style="flex:1;">
-        <div class="blocker-title">SES SMTP credentials must be recreated + sandbox lifted</div>
-        <div class="blocker-sub">IAM user <span class="mono">ses-smtp-user-pribumi</span> credentials are account-specific. New AWS account starts in SES sandbox — production access request needed before emails flow.</div>
-      </div>
-      <span class="badge badge-yellow">REQUIRES ACTION</span>
-    </div>
+    <div class="blocker" style="border-color:rgba(248,81,73,0.4);"><div class="blocker-icon">🔴</div><div style="flex:1;"><div class="blocker-title">Root account email must be changed</div><div class="blocker-sub">Currently <span class="mono">pribumi@amancloud.com</span> — must be updated to new owner's email. Requires root account access + MFA.</div></div><span class="badge badge-red">REQUIRED</span></div>
+    <div class="blocker" style="border-color:rgba(248,81,73,0.4);"><div class="blocker-icon">🔴</div><div style="flex:1;"><div class="blocker-title">Remove account from amancloud.com AWS Organisation</div><div class="blocker-sub">Account is member of org <span class="mono">o-jktkfxsva8</span>. Must be removed by master account <span class="mono">269031123284</span>. All SSO roles stop working upon removal.</div></div><span class="badge badge-red">REQUIRED</span></div>
+    <div class="blocker"><div class="blocker-icon">🟡</div><div style="flex:1;"><div class="blocker-title">All alternate contacts point to amancloud.com</div><div class="blocker-sub">Billing, operations, and security contacts all set to <span class="mono">rahman@amancloud.com</span>. Must be updated to new owner's contact details.</div></div><span class="badge badge-yellow">REQUIRED</span></div>
+    <div class="blocker"><div class="blocker-icon">🟡</div><div style="flex:1;"><div class="blocker-title">amancloud.com IAM access must be revoked</div><div class="blocker-sub">IAM users <span class="mono">cloudwatch</span> and <span class="mono">ses-smtp-user-pribumi</span> have active credentials. AWS SSO roles (<span class="mono">AWSReservedSSO_*</span>) will break automatically on org exit.</div></div><span class="badge badge-yellow">REQUIRED</span></div>
+    <div class="blocker"><div class="blocker-icon">🟡</div><div style="flex:1;"><div class="blocker-title">Root MFA not enabled</div><div class="blocker-sub">No MFA device on root account. New owner must set up root MFA immediately upon taking ownership.</div></div><span class="badge badge-yellow">REQUIRED</span></div>
+    <div class="blocker"><div class="blocker-icon">🟢</div><div style="flex:1;"><div class="blocker-title">DNS provider credentials must be handed over</div><div class="blocker-sub"><span class="mono">elearning.pribumi.my</span> is managed externally (not Route 53). DNS provider login must be included in the handover package.</div></div><span class="badge badge-green">HAND OVER</span></div>
   </div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 6 — MIGRATION PLAN
+     SLIDE 6 — HANDOVER PLAN
 ═══════════════════════════════════════════════════════ -->
 <section class="slide" id="s6">
-  <div class="label">Migration Plan</div>
-  <h2>4-Phase Migration</h2>
+  <div class="label">Handover Plan</div>
+  <h2>3-Phase Account Handover</h2>
   <div class="cols cols-2" style="gap:24px; align-items:start;">
     <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div>
-        <div class="tl-content">
-          <div class="tl-title">Phase 1 — Pre-Handover Prep <span style="color:var(--muted); font-weight:400;">~3–5 days</span></div>
-          <div class="tl-sub">Create CMK · re-encrypt RDS snapshot · backup Moodle files to S3 · add new SSH key via SSM · document app config</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
-        <div class="tl-content">
-          <div class="tl-title">Phase 2 — New Account Setup <span style="color:var(--muted); font-weight:400;">~2–3 days</span></div>
-          <div class="tl-sub">Activate ap-southeast-5 · provision EC2 (Debian 12) · restore RDS from shared snapshot · new ACM cert · deploy CloudFront · set up SES</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot warn"></div><div class="tl-line"></div></div>
-        <div class="tl-content">
-          <div class="tl-title">Phase 3 — Cutover <span style="color:var(--muted); font-weight:400;">2–4 hour window</span></div>
-          <div class="tl-sub">Final DB snapshot → final S3 sync → update config.php → DNS update → Let's Encrypt renewal → smoke test</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-left"><div class="tl-dot"></div></div>
-        <div class="tl-content">
-          <div class="tl-title">Phase 4 — Cleanup <span style="color:var(--muted); font-weight:400;">1 week post-cutover</span></div>
-          <div class="tl-sub">Remove account from amancloud.com org · join new org · decommission source EC2, RDS, EIP, AMIs, IAM roles</div>
-        </div>
-      </div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Phase 1 — Preparation <span style="color:var(--muted); font-weight:400;">~1 day</span></div><div class="tl-sub">Create standalone IAM admin user with MFA · document all credentials, DNS records, SMTP settings · new owner sets up AWS CLI access</div></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot warn"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Phase 2 — Ownership Transfer <span style="color:var(--muted); font-weight:400;">~1 day</span></div><div class="tl-sub">Update root email → update all alternate contacts → remove from amancloud.com org → new owner adds payment method → enable root MFA</div></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot"></div></div><div class="tl-content"><div class="tl-title">Phase 3 — Cleanup <span style="color:var(--muted); font-weight:400;">~1 day</span></div><div class="tl-sub">Remove amancloud.com IAM users · delete SSO roles · set up standalone CloudTrail · invite account to new org · verify application still running</div></div></div>
     </div>
     <div style="display:flex; flex-direction:column; gap:14px;">
-      <div class="card card-sm">
-        <h3>Cutover Sequence (Maintenance Window)</h3>
-        <table>
-          <tr><td>3.1</td><td>Maintenance page already live ✓</td></tr>
-          <tr><td>3.2</td><td>Final RDS snapshot (15–30 min)</td></tr>
-          <tr><td>3.3</td><td>Final S3 sync delta (5–15 min)</td></tr>
-          <tr><td>3.4</td><td>Update config.php → new RDS endpoint</td></tr>
-          <tr><td>3.5</td><td>DNS CNAME → new CloudFront domain</td></tr>
-          <tr><td>3.6</td><td>Let's Encrypt renewal on new EC2</td></tr>
-          <tr><td>3.7</td><td>Smoke test + monitor 24–48 hrs</td></tr>
-        </table>
-      </div>
-      <div class="card card-sm">
-        <h3>DNS Note</h3>
-        <p style="font-size:0.82rem;">Reduce TTL to 300s at least 48 hours before cutover to minimise propagation delay. Current record: <span class="mono">elearning.pribumi.my → d7pals97a1ooa.cloudfront.net</span></p>
-      </div>
+      <div class="card card-sm"><h3>Handover Package Checklist</h3><table><tr><td>✅</td><td>Root account email + MFA reset</td></tr><tr><td>✅</td><td>Application config.php (DB password, SMTP)</td></tr><tr><td>✅</td><td>DNS provider login credentials</td></tr><tr><td>✅</td><td>SES SMTP credentials (ses-smtp-user-pribumi)</td></tr><tr><td>✅</td><td>SSH key pair or SSM-only access setup</td></tr><tr><td>✅</td><td>CloudWatch alarms notification email updated</td></tr><tr><td>✅</td><td>GitHub repo amantechnology/pribumi transferred</td></tr></table></div>
+      <div class="card card-sm"><h3>What Breaks on Org Exit</h3><table><tr><td>AWSReservedSSO_* roles</td><td><span class="badge badge-red">Stop working</span></td></tr><tr><td>Control Tower SCPs</td><td><span class="badge badge-yellow">Detached</span></td></tr><tr><td>Org CloudTrail</td><td><span class="badge badge-yellow">Stops</span></td></tr><tr><td>Consolidated billing</td><td><span class="badge badge-yellow">Standalone</span></td></tr></table><p style="font-size:0.78rem; color:var(--yellow); margin-top:8px;">⚠️ Standalone CloudTrail must be set up immediately after org removal.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
      SLIDE 7 — MODERNISATION
 ═══════════════════════════════════════════════════════ -->
 <section class="slide" id="s7">
   <div class="label">Platform Modernisation</div>
-  <h2>Recommended Upgrades (During Migration)</h2>
-  <p style="margin-bottom:24px;">The migration is an ideal time to move to a fresh server — avoiding in-place upgrades on a production system.</p>
+  <h2>Recommended Upgrades (Post-Handover)</h2>
+  <p style="margin-bottom:24px;">These upgrades are recommended once handover is complete, done in-place on the existing server in the same account.</p>
   <div class="cols cols-2" style="gap:20px;">
     <div style="display:flex; flex-direction:column; gap:12px;">
       <div class="card card-sm">
@@ -604,7 +532,7 @@ dataroot= /var/www/moodledata</div>
     </div>
     <div style="display:flex; flex-direction:column; gap:12px;">
       <div class="card card-sm">
-        <h3>Security Hardening (new account)</h3>
+        <h3>Security Hardening (post-handover)</h3>
         <ul class="ilist" style="font-size:0.83rem;">
           <li><span>✅</span><span>Enforce IMDSv2 on EC2 instance</span></li>
           <li><span>✅</span><span>Enable EBS encryption by default (all new volumes)</span></li>
@@ -725,15 +653,15 @@ dataroot= /var/www/moodledata</div>
       <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent); margin-bottom:10px;">WORKSTREAM B</div>
       <div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Account Handover</div>
       <ul class="ilist" style="font-size:0.82rem; margin-bottom:16px;">
-        <li><span>🔑</span><span>KMS re-encryption + RDS snapshot share</span></li>
-        <li><span>📦</span><span>Moodle files + S3 bucket migration</span></li>
-        <li><span>☁️</span><span>New account infra setup + CloudFront</span></li>
-        <li><span>✂️</span><span>Scheduled cutover + DNS update</span></li>
-        <li><span>🏢</span><span>Org removal + join new org + cleanup</span></li>
+        <li><span>✉️</span><span>Update root email + all alternate contacts</span></li>
+        <li><span>🏢</span><span>Remove from amancloud.com org</span></li>
+        <li><span>🔐</span><span>Set up root MFA for new owner</span></li>
+        <li><span>🧹</span><span>Remove amancloud.com IAM users + SSO roles</span></li>
+        <li><span>📋</span><span>Standalone CloudTrail + invite to new org</span></li>
       </ul>
       <div style="border-top:1px solid var(--border); padding-top:12px;">
-        <div style="font-size:0.75rem; color:var(--muted);">Duration: 5–7 days</div>
-        <div style="font-size:1.5rem; font-weight:700; color:var(--accent); margin-top:4px;">RM 2,500</div>
+        <div style="font-size:0.75rem; color:var(--muted);">Duration: 2–3 days</div>
+        <div style="font-size:1.5rem; font-weight:700; color:var(--accent); margin-top:4px;">RM 1,500</div>
       </div>
     </div>
     <div class="card" style="border-color:var(--green);">
@@ -754,11 +682,11 @@ dataroot= /var/www/moodledata</div>
   </div>
   <div class="card" style="background:rgba(88,166,255,0.06); border-color:var(--accent); display:flex; justify-content:space-between; align-items:center;">
     <div>
-      <div style="font-size:0.8rem; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Full Package — Both Workstreams</div>
+      <div style="font-size:0.8rem; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Full Package — Account Handover + Modernisation</div>
       <div style="font-size:0.85rem; color:var(--muted); margin-top:4px;">Account Handover + Platform Modernisation</div>
     </div>
     <div style="text-align:right;">
-      <div style="font-size:2rem; font-weight:700; color:var(--accent);">RM 4,000</div>
+      <div style="font-size:2rem; font-weight:700; color:var(--accent);">RM 3,000</div>
     </div>
   </div>
 </section>
@@ -778,8 +706,8 @@ dataroot= /var/www/moodledata</div>
           <th></th>
         </tr>
         <tr>
-          <td>Week 1 · Days 2–5</td>
-          <td>New account setup, RDS re-encryption, S3 migration, EC2 provisioning</td>
+          <td>Week 1 · Days 1–3</td>
+          <td>Root email update, contacts, org removal, standalone CloudTrail</td>
           <td><span class="badge badge-blue">B</span></td>
         </tr>
         <tr>
@@ -813,9 +741,9 @@ dataroot= /var/www/moodledata</div>
       <div class="card card-sm">
         <h3>Payment Milestones</h3>
         <table>
-          <tr><td>On engagement confirmation</td><td style="text-align:right; font-weight:600;">RM 2,000 <span style="color:var(--muted); font-size:0.78rem;">(50%)</span></td></tr>
-          <tr><td>On successful cutover</td><td style="text-align:right; font-weight:600;">RM 1,200 <span style="color:var(--muted); font-size:0.78rem;">(30%)</span></td></tr>
-          <tr><td>On final handover + docs</td><td style="text-align:right; font-weight:600;">RM 800 <span style="color:var(--muted); font-size:0.78rem;">(20%)</span></td></tr>
+          <tr><td>On engagement confirmation</td><td style="text-align:right; font-weight:600;">RM 1,500 <span style="color:var(--muted); font-size:0.78rem;">(50%)</span></td></tr>
+          <tr><td>On org removal &amp; handover complete</td><td style="text-align:right; font-weight:600;">RM 900 <span style="color:var(--muted); font-size:0.78rem;">(30%)</span></td></tr>
+          <tr><td>On final handover + docs</td><td style="text-align:right; font-weight:600;">RM 600 <span style="color:var(--muted); font-size:0.78rem;">(20%)</span></td></tr>
         </table>
       </div>
       <div class="card card-sm">
@@ -865,9 +793,9 @@ dataroot= /var/www/moodledata</div>
     </div>
   </div>
   <div class="card card-sm" style="margin-top:16px; display:flex; gap:32px; align-items:center;">
-    <div class="stat"><div class="stat-val blue">5</div><div class="stat-lbl">Migration blockers</div></div>
-    <div class="stat"><div class="stat-val yellow">2–3</div><div class="stat-lbl">Weeks to complete</div></div>
-    <div class="stat"><div class="stat-val green">2–4 hrs</div><div class="stat-lbl">Maintenance window</div></div>
+    <div class="stat"><div class="stat-val blue">5</div><div class="stat-lbl">Handover items</div></div>
+    <div class="stat"><div class="stat-val yellow">1</div><div class="stat-lbl">Week to complete</div></div>
+    <div class="stat"><div class="stat-val green">0</div><div class="stat-lbl">Downtime required</div></div>
     <div class="stat"><div class="stat-val purple">RM 150</div><div class="stat-lbl">Monthly AWS cost</div></div>
     <div class="stat"><div class="stat-val red">0</div><div class="stat-lbl">Root MFA (fix first)</div></div>
   </div>
