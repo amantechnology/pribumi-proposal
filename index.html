@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pribumi E-Learning — AWS Handover Presentation</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --orange: #e3b341;
+    --purple: #bc8cff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── SLIDE ENGINE ── */
+  .deck { width: 100%; height: 100%; position: relative; }
+
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    padding: 56px 72px;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  .slide.active { display: flex; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 10px 24px;
+    z-index: 100;
+    user-select: none;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav button:hover { color: var(--text); background: var(--border); }
+
+  #slide-counter { font-size: 13px; color: var(--muted); min-width: 60px; text-align: center; }
+
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .dot.active { background: var(--accent); }
+
+  /* ── TYPOGRAPHY ── */
+  h1 { font-size: 2.6rem; font-weight: 700; line-height: 1.2; color: var(--text); }
+  h2 { font-size: 1.9rem; font-weight: 700; color: var(--text); margin-bottom: 28px; }
+  h3 { font-size: 1.2rem; font-weight: 600; color: var(--accent); margin-bottom: 12px; }
+  p  { color: var(--muted); line-height: 1.6; }
+  .subtitle { font-size: 1.1rem; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+  .label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+  /* ── LAYOUT HELPERS ── */
+  .cols { display: grid; gap: 24px; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols-12 { grid-template-columns: 1fr 2fr; }
+  .cols-21 { grid-template-columns: 2fr 1fr; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card-sm { padding: 16px 20px; }
+
+  /* ── TABLE ── */
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82rem; color: var(--purple); }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .badge-green  { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-red    { background: rgba(248,81,73,0.15);  color: var(--red); }
+  .badge-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .badge-blue   { background: rgba(88,166,255,0.15); color: var(--accent); }
+  .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); }
+
+  /* ── STAT TILES ── */
+  .stat { text-align: center; }
+  .stat-val { font-size: 2.2rem; font-weight: 700; }
+  .stat-lbl { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .yellow { color: var(--yellow); }
+  .blue { color: var(--accent); }
+  .purple { color: var(--purple); }
+
+  /* ── ICON LIST ── */
+  .ilist { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .ilist li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: var(--text); }
+  .ilist li span:first-child { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── CODE BLOCK ── */
+  .code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: var(--green);
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  /* ── ARCH DIAGRAM ── */
+  .arch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    font-size: 0.82rem;
+  }
+  .arch-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 22px;
+    text-align: center;
+    min-width: 200px;
+  }
+  .arch-box .label { margin-bottom: 2px; }
+  .arch-box .name { font-weight: 600; color: var(--text); }
+  .arch-box .detail { color: var(--muted); font-size: 0.75rem; margin-top: 2px; }
+  .arch-arrow {
+    width: 2px;
+    height: 22px;
+    background: var(--border);
+    position: relative;
+  }
+  .arch-arrow::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--border);
+    border-bottom: none;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 16px; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 36px; flex-shrink: 0; }
+  .tl-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .tl-dot.done { background: var(--green); border-color: var(--green); }
+  .tl-dot.warn { background: var(--yellow); border-color: var(--yellow); }
+  .tl-dot.crit { background: var(--red); border-color: var(--red); }
+  .tl-line { width: 2px; flex: 1; background: var(--border); margin: 4px 0; }
+  .tl-content { padding-bottom: 18px; }
+  .tl-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .tl-sub { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+
+  /* ── SLIDE 1 – COVER ── */
+  #s1 { justify-content: center; background: radial-gradient(ellipse at 30% 40%, rgba(88,166,255,0.06) 0%, transparent 60%); }
+  .cover-logo { width: 80px; height: 80px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 28px; overflow: hidden; }
+  .cover-logo img { width: 64px; height: 64px; object-fit: contain; }
+  .cover-meta { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
+  .cover-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 0.8rem; color: var(--muted); }
+  .cover-chip strong { color: var(--text); }
+
+  /* ── DIVIDER ── */
+  .divider { width: 48px; height: 3px; background: var(--accent); border-radius: 2px; margin: 16px 0 28px; }
+
+  /* ── BLOCKER ITEM ── */
+  .blocker { display: flex; gap: 14px; align-items: flex-start; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .blocker-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+  .blocker-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .blocker-sub { font-size: 0.8rem; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+
+  /* ── COST BAR ── */
+  .cost-bar-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .cost-row { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; }
+  .cost-label { width: 190px; color: var(--text); flex-shrink: 0; }
+  .cost-bar-bg { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .cost-bar-fill { height: 100%; border-radius: 4px; }
+  .cost-amount { width: 80px; text-align: right; font-weight: 600; color: var(--text); flex-shrink: 0; }
+
+  /* Keyboard hint */
+  .kbd-hint { position: fixed; top: 20px; right: 24px; font-size: 0.72rem; color: var(--muted); }
+  .kbd { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; }
+</style>
+</head>
+<body>
+
+<span class="kbd-hint"><kbd class="kbd">←</kbd> <kbd class="kbd">→</kbd> to navigate</span>
+
+<div class="deck">
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 1 — COVER
+═══════════════════════════════════════════════════════ -->
+<section class="slide active" id="s1">
+  <div class="cover-logo">
+    <img src="p.png" alt="Pribumi">
+  </div>
+  <div class="label">AWS Account Handover</div>
+  <h1 style="max-width:700px; margin-top:10px;">Pribumi E-Learning<br>Platform</h1>
+  <p class="subtitle" style="max-width:520px; margin-top:14px;">
+    Infrastructure assessment, migration plan, and business proposal for transferring <strong style="color:var(--text)">elearning.pribumi.my</strong> to a new AWS organisation.
+  </p>
+  <div class="divider"></div>
+  <div class="cover-meta">
+    <div class="cover-chip">Account <strong>396913716883</strong></div>
+    <div class="cover-chip">Region <strong>ap-southeast-5 (Malaysia)</strong></div>
+    <div class="cover-chip">Assessed <strong>September 2026</strong></div>
+    <div class="cover-chip">Prepared by <strong>Abdul Rahman Yusmadi</strong></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 2 — WHAT WE'RE HANDING OVER
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="label">Overview</div>
+  <h2>What's in this account?</h2>
+  <div class="cols cols-3" style="gap:20px;">
+    <div class="card">
+      <div class="label" style="margin-bottom:10px;">Application</div>
+      <div style="font-size:1.5rem; font-weight:700; color:var(--accent);">Moodle LMS</div>
+      <div style="font-size:0.85rem; color:var(--muted); margin-top:6px;">Version 4.1.4 (Build 20230612)</div>
+      <div style="margin-top:14px;">
+        <span class="badge badge-green">🟢 Live</span>
+        <span class="badge badge-blue" style="margin-left:6px;">Active Users</span>
+      </div>
+      <div style="margin-top:14px; font-size:0.82rem; color:var(--muted); line-height:1.6;">
+        e-Learning platform serving learners at<br>
+        <span style="color:var(--accent);">elearning.pribumi.my</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label" style="margin-bottom:10px;">Infrastructure</div>
+      <ul class="ilist" style="font-size:0.85rem;">
+        <li><span>🖥️</span><span>EC2 <strong>t3.micro</strong> · Debian 11 · ap-southeast-5b</span></li>
+        <li><span>🗄️</span><span>RDS <strong>MariaDB 10.11</strong> · db.t3.micro · 20 GB</span></li>
+        <li><span>🌐</span><span>CloudFront CDN · custom domain · ACM SSL</span></li>
+        <li><span>🪣</span><span>S3 bucket <code class="mono">pribumi-elearning</code></span></li>
+        <li><span>📧</span><span>SES SMTP for transactional email</span></li>
+        <li><span>📍</span><span>Elastic IP <strong>56.69.28.39</strong></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="label" style="margin-bottom:10px;">Account Details</div>
+      <ul class="ilist" style="font-size:0.85rem;">
+        <li><span>🏷️</span><span>ID <span class="mono">396913716883</span></span></li>
+        <li><span>📛</span><span>Alias <strong>pribumi1</strong></span></li>
+        <li><span>✉️</span><span>Root email <strong>pribumi@amancloud.com</strong></span></li>
+        <li><span>🏢</span><span>Org <strong>o-jktkfxsva8</strong> (amancloud.com)</span></li>
+        <li><span>📍</span><span>OU <strong>Workloads</strong></span></li>
+        <li><span>💰</span><span>Cost ~<strong>RM 150/month</strong></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 3 — ARCHITECTURE
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <div class="label">Architecture</div>
+  <h2>System Architecture</h2>
+  <div class="cols cols-12" style="gap:32px; align-items:start;">
+    <div class="arch" style="padding-top:8px;">
+      <div class="arch-box" style="border-color:var(--accent);">
+        <div class="label">DNS</div>
+        <div class="name">elearning.pribumi.my</div>
+        <div class="detail">CNAME → CloudFront</div>
+      </div>
+      <div class="arch-arrow"></div>
+      <div class="arch-box" style="border-color:var(--purple);">
+        <div class="label">CDN · us-east-1 / global</div>
+        <div class="name">CloudFront E1DVC3BO9AJZYG</div>
+        <div class="detail">ACM cert · TLS 1.2 · OAC</div>
+      </div>
+      <div class="arch-arrow"></div>
+      <div class="arch-box" style="border-color:var(--green);">
+        <div class="label">Compute · ap-southeast-5b</div>
+        <div class="name">EC2 t3.micro — pribumi-prod</div>
+        <div class="detail">Apache 2.4 · PHP 7.4 · Moodle 4.1.4<br>EIP 56.69.28.39 · Let's Encrypt SSL</div>
+      </div>
+      <div class="arch-arrow"></div>
+      <div class="arch-box" style="border-color:var(--yellow);">
+        <div class="label">Database · ap-southeast-5b</div>
+        <div class="name">RDS MariaDB 10.11 — pribumi</div>
+        <div class="detail">db.t3.micro · 20GB gp2 · KMS encrypted<br>7-day automated backups</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div class="card card-sm">
+        <h3 style="margin-bottom:10px;">Storage</h3>
+        <table>
+          <tr><td>/dev/xvda (root)</td><td>10 GB gp2 <span class="badge badge-red">89% full</span></td></tr>
+          <tr><td>/dev/sdb (moodledata)</td><td>10 GB gp3 · 24% used</td></tr>
+          <tr><td>S3 pribumi-elearning</td><td>ap-southeast-1 · media/content</td></tr>
+        </table>
+      </div>
+      <div class="card card-sm">
+        <h3 style="margin-bottom:10px;">Moodle Config (confirmed via SSM)</h3>
+        <div class="code">dbhost  = pribumi.cj822ssc6ix8
+         .ap-southeast-5.rds.amazonaws.com
+dbname  = moodle_pribumi
+wwwroot = https://elearning.pribumi.my
+dataroot= /var/www/moodledata</div>
+      </div>
+      <div class="card card-sm">
+        <h3 style="margin-bottom:10px;">Key Plugins</h3>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span class="badge badge-blue">Zoom</span>
+          <span class="badge badge-blue">BigBlueButton</span>
+          <span class="badge badge-blue">H5P</span>
+          <span class="badge badge-blue">Course Certificate</span>
+          <span class="badge badge-purple">moove theme</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 4 — CURRENT ISSUES
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="label">Pre-Handover Assessment</div>
+  <h2>Current Issues Found</h2>
+  <div class="cols cols-2" style="gap:16px;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="blocker">
+        <div class="blocker-icon">🔴</div>
+        <div>
+          <div class="blocker-title">Root disk 89% full</div>
+          <div class="blocker-sub">Only ~1.1 GB free on the 10 GB root volume. Risk of Apache crash, PHP session failure, and silent Moodle cron failure if disk fills up.</div>
+        </div>
+      </div>
+      <div class="blocker">
+        <div class="blocker-icon">🔴</div>
+        <div>
+          <div class="blocker-title">Moodle 4.1 — Past end of support</div>
+          <div class="blocker-sub">Security support ended May 2025. Running unsupported for 15+ months. No security patches being received.</div>
+        </div>
+      </div>
+      <div class="blocker">
+        <div class="blocker-icon">🟡</div>
+        <div>
+          <div class="blocker-title">PHP 7.4 — End of life since Nov 2022</div>
+          <div class="blocker-sub">No security updates. Moodle 4.5 requires PHP 8.1+. Upgrade needed as part of migration.</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="blocker">
+        <div class="blocker-icon">🟡</div>
+        <div>
+          <div class="blocker-title">Debian 11 — LTS ends August 2026</div>
+          <div class="blocker-sub">OS is at end of long-term support. No further security patches from Debian security team.</div>
+        </div>
+      </div>
+      <div class="blocker">
+        <div class="blocker-icon">🟡</div>
+        <div>
+          <div class="blocker-title">Moodle cron fails silently</div>
+          <div class="blocker-sub">Output directed to /dev/null. Email delivery, course completions, and reports would stop without any alert.</div>
+        </div>
+      </div>
+      <div class="blocker">
+        <div class="blocker-icon">🟡</div>
+        <div>
+          <div class="blocker-title">IMDSv2 not enforced + EBS unencrypted</div>
+          <div class="blocker-sub">Root and data EBS volumes are unencrypted. IMDS allows v1 requests — security best practice not met.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 5 — HANDOVER BLOCKERS
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="label">Migration Blockers</div>
+  <h2>5 Blockers Before Handover Can Complete</h2>
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div class="blocker" style="border-color:rgba(248,81,73,0.4);">
+      <div class="blocker-icon">🔴</div>
+      <div style="flex:1;">
+        <div class="blocker-title">Marketplace AMI is account-bound</div>
+        <div class="blocker-sub">AMI <span class="mono">ami-0f02faea62194c526</span> (product <span class="mono">9m3tff1jneeyfykcbnsnmkbz6</span>) cannot be shared to another account. New owner must subscribe to the Marketplace product or redeploy from a base AMI.</div>
+      </div>
+      <span class="badge badge-red">BLOCKER</span>
+    </div>
+    <div class="blocker" style="border-color:rgba(248,81,73,0.4);">
+      <div class="blocker-icon">🔴</div>
+      <div style="flex:1;">
+        <div class="blocker-title">RDS encrypted with AWS-managed KMS key (non-exportable)</div>
+        <div class="blocker-sub">Key <span class="mono">347fc705</span> is account-bound. Must create a Customer Managed Key (CMK), copy RDS snapshot re-encrypted with CMK, then share to new account.</div>
+      </div>
+      <span class="badge badge-red">BLOCKER</span>
+    </div>
+    <div class="blocker" style="border-color:rgba(248,81,73,0.4);">
+      <div class="blocker-icon">🔴</div>
+      <div style="flex:1;">
+        <div class="blocker-title">Account is member of AWS Organization o-jktkfxsva8</div>
+        <div class="blocker-sub">Must be removed by amancloud.com master account (269031123284). SSO roles, Control Tower SCPs, and org CloudTrail all stop upon removal. Requires a standalone period before joining new org.</div>
+      </div>
+      <span class="badge badge-red">BLOCKER</span>
+    </div>
+    <div class="blocker">
+      <div class="blocker-icon">🟡</div>
+      <div style="flex:1;">
+        <div class="blocker-title">ACM certificate is account-bound</div>
+        <div class="blocker-sub">Certificate <span class="mono">21aabf8a-...</span> for elearning.pribumi.my cannot be transferred. New cert must be issued in new account via DNS validation.</div>
+      </div>
+      <span class="badge badge-yellow">REQUIRES ACTION</span>
+    </div>
+    <div class="blocker">
+      <div class="blocker-icon">🟡</div>
+      <div style="flex:1;">
+        <div class="blocker-title">SES SMTP credentials must be recreated + sandbox lifted</div>
+        <div class="blocker-sub">IAM user <span class="mono">ses-smtp-user-pribumi</span> credentials are account-specific. New AWS account starts in SES sandbox — production access request needed before emails flow.</div>
+      </div>
+      <span class="badge badge-yellow">REQUIRES ACTION</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 6 — MIGRATION PLAN
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <div class="label">Migration Plan</div>
+  <h2>4-Phase Migration</h2>
+  <div class="cols cols-2" style="gap:24px; align-items:start;">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">Phase 1 — Pre-Handover Prep <span style="color:var(--muted); font-weight:400;">~3–5 days</span></div>
+          <div class="tl-sub">Create CMK · re-encrypt RDS snapshot · backup Moodle files to S3 · add new SSH key via SSM · document app config</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">Phase 2 — New Account Setup <span style="color:var(--muted); font-weight:400;">~2–3 days</span></div>
+          <div class="tl-sub">Activate ap-southeast-5 · provision EC2 (Debian 12) · restore RDS from shared snapshot · new ACM cert · deploy CloudFront · set up SES</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot warn"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">Phase 3 — Cutover <span style="color:var(--muted); font-weight:400;">2–4 hour window</span></div>
+          <div class="tl-sub">Final DB snapshot → final S3 sync → update config.php → DNS update → Let's Encrypt renewal → smoke test</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-title">Phase 4 — Cleanup <span style="color:var(--muted); font-weight:400;">1 week post-cutover</span></div>
+          <div class="tl-sub">Remove account from amancloud.com org · join new org · decommission source EC2, RDS, EIP, AMIs, IAM roles</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="card card-sm">
+        <h3>Cutover Sequence (Maintenance Window)</h3>
+        <table>
+          <tr><td>3.1</td><td>Maintenance page already live ✓</td></tr>
+          <tr><td>3.2</td><td>Final RDS snapshot (15–30 min)</td></tr>
+          <tr><td>3.3</td><td>Final S3 sync delta (5–15 min)</td></tr>
+          <tr><td>3.4</td><td>Update config.php → new RDS endpoint</td></tr>
+          <tr><td>3.5</td><td>DNS CNAME → new CloudFront domain</td></tr>
+          <tr><td>3.6</td><td>Let's Encrypt renewal on new EC2</td></tr>
+          <tr><td>3.7</td><td>Smoke test + monitor 24–48 hrs</td></tr>
+        </table>
+      </div>
+      <div class="card card-sm">
+        <h3>DNS Note</h3>
+        <p style="font-size:0.82rem;">Reduce TTL to 300s at least 48 hours before cutover to minimise propagation delay. Current record: <span class="mono">elearning.pribumi.my → d7pals97a1ooa.cloudfront.net</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 7 — MODERNISATION
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="label">Platform Modernisation</div>
+  <h2>Recommended Upgrades (During Migration)</h2>
+  <p style="margin-bottom:24px;">The migration is an ideal time to move to a fresh server — avoiding in-place upgrades on a production system.</p>
+  <div class="cols cols-2" style="gap:20px;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="card card-sm">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin:0;">Operating System</h3>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; font-size:0.88rem;">
+          <div style="text-align:center;"><div class="badge badge-red">Debian 11</div><div style="color:var(--muted); font-size:0.75rem; margin-top:4px;">EOL Aug 2026</div></div>
+          <div style="font-size:1.2rem; color:var(--muted);">→</div>
+          <div style="text-align:center;"><div class="badge badge-green">Debian 12</div><div style="color:var(--muted); font-size:0.75rem; margin-top:4px;">Supported 2028</div></div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin:0;">PHP</h3>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; font-size:0.88rem;">
+          <div style="text-align:center;"><div class="badge badge-red">PHP 7.4</div><div style="color:var(--muted); font-size:0.75rem; margin-top:4px;">EOL Nov 2022</div></div>
+          <div style="font-size:1.2rem; color:var(--muted);">→</div>
+          <div style="text-align:center;"><div class="badge badge-green">PHP 8.2</div><div style="color:var(--muted); font-size:0.75rem; margin-top:4px;">Supported 2026</div></div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin:0;">Moodle LMS</h3>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; font-size:0.88rem;">
+          <div style="text-align:center;"><div class="badge badge-red">4.1.4</div><div style="color:var(--muted); font-size:0.75rem; margin-top:4px;">EOL May 2025</div></div>
+          <div style="font-size:1.2rem; color:var(--muted);">→</div>
+          <div style="text-align:center;"><div class="badge badge-green">4.5 LTS</div><div style="color:var(--muted); font-size:0.75rem; margin-top:4px;">Supported May 2027</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="card card-sm">
+        <h3>Security Hardening (new account)</h3>
+        <ul class="ilist" style="font-size:0.83rem;">
+          <li><span>✅</span><span>Enforce IMDSv2 on EC2 instance</span></li>
+          <li><span>✅</span><span>Enable EBS encryption by default (all new volumes)</span></li>
+          <li><span>✅</span><span>Enable RDS deletion protection</span></li>
+          <li><span>✅</span><span>MFA on root account and IAM users</span></li>
+          <li><span>✅</span><span>Enable GuardDuty threat detection</span></li>
+          <li><span>✅</span><span>Replace SSH key pair with SSM Session Manager only</span></li>
+        </ul>
+      </div>
+      <div class="card card-sm">
+        <h3>Plugin Compatibility Check</h3>
+        <table>
+          <tr><th>Plugin</th><th>Moodle 4.5 Compatible?</th></tr>
+          <tr><td>zoom</td><td><span class="badge badge-yellow">To verify</span></td></tr>
+          <tr><td>bigbluebuttonbn</td><td><span class="badge badge-green">Core — yes</span></td></tr>
+          <tr><td>coursecertificate</td><td><span class="badge badge-yellow">To verify</span></td></tr>
+          <tr><td>moove theme</td><td><span class="badge badge-yellow">To verify</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 8 — MONTHLY COST
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <div class="label">AWS Infrastructure Cost</div>
+  <h2>Monthly Cost — ap-southeast-5 (Malaysia)</h2>
+  <div class="cols cols-2" style="gap:32px; align-items:start;">
+    <div>
+      <div style="font-size:0.78rem; color:var(--muted); margin-bottom:18px;">All prices from AWS Pricing API, ap-southeast-5. USD/MYR = 4.09</div>
+      <div class="cost-bar-wrap">
+        <div class="cost-row">
+          <div class="cost-label">RDS db.t3.micro + storage</div>
+          <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:58%; background:var(--yellow);"></div></div>
+          <div class="cost-amount">RM 86.34</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">EC2 t3.micro compute</div>
+          <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:24%; background:var(--accent);"></div></div>
+          <div class="cost-amount">RM 35.54</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">Elastic IP (IPv4)</div>
+          <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:10%; background:var(--purple);"></div></div>
+          <div class="cost-amount">RM 14.93</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">EBS gp2 root (10 GB)</div>
+          <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:3%; background:var(--muted);"></div></div>
+          <div class="cost-amount">RM 4.42</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">EBS gp3 data (10 GB)</div>
+          <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:2.4%; background:var(--muted);"></div></div>
+          <div class="cost-amount">RM 3.52</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">CloudFront + S3 + ACM</div>
+          <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:1.7%; background:var(--green);"></div></div>
+          <div class="cost-amount">RM 2.49</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">CloudWatch + SNS + SES</div>
+          <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:1.7%; background:var(--green);"></div></div>
+          <div class="cost-amount">RM 2.49</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border); margin-top:18px; padding-top:14px; display:flex; justify-content:space-between;">
+        <span style="font-size:0.9rem; color:var(--muted);">Total On-Demand</span>
+        <span style="font-size:1.3rem; font-weight:700; color:var(--text);">RM 149.73 <span style="font-size:0.75rem; color:var(--muted);">/ month</span></span>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div class="card card-sm">
+        <h3>Cost Optimisation Options</h3>
+        <table>
+          <tr>
+            <td>On-Demand (current)</td>
+            <td style="text-align:right; font-weight:600;">RM 149.73</td>
+          </tr>
+          <tr>
+            <td>1-Year Reserved (EC2 + RDS)</td>
+            <td style="text-align:right; font-weight:600; color:var(--green);">~RM 106 <span style="color:var(--green); font-size:0.75rem;">save 29%</span></td>
+          </tr>
+          <tr>
+            <td>+ RDS Multi-AZ (HA)</td>
+            <td style="text-align:right; font-weight:600; color:var(--yellow);">~RM 224</td>
+          </tr>
+        </table>
+      </div>
+      <div class="card card-sm">
+        <h3>RDS is the Dominant Cost</h3>
+        <p style="font-size:0.83rem;">RDS MariaDB at <span class="mono">$0.025/hr</span> accounts for 58% of the monthly bill. Consider 1-year Reserved Instance to reduce to <span class="mono">$0.0192/hr</span> once migration is stable.</p>
+      </div>
+      <div class="card card-sm">
+        <h3>Actual Spend (last 3 months)</h3>
+        <table>
+          <tr><td>Sep 2025</td><td style="text-align:right;">$13.48 <span style="color:var(--muted); font-size:0.8rem;">(RM 55.13)</span></td></tr>
+          <tr><td>Oct 2025</td><td style="text-align:right;">$14.08 <span style="color:var(--muted); font-size:0.8rem;">(RM 57.59)</span></td></tr>
+          <tr><td>Nov 2025</td><td style="text-align:right;">$13.96 <span style="color:var(--muted); font-size:0.8rem;">(RM 57.08)</span></td></tr>
+        </table>
+        <p style="font-size:0.75rem; color:var(--muted); margin-top:8px;">Source: AWS Cost Explorer via management account</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 9 — PROPOSAL
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <div class="label">Business Proposal</div>
+  <h2>Scope of Work & Pricing</h2>
+  <div class="cols cols-3" style="gap:18px; margin-bottom:20px;">
+    <div class="card" style="border-color:var(--yellow);">
+      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--yellow); margin-bottom:10px;">WORKSTREAM A</div>
+      <div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Immediate Remediation</div>
+      <ul class="ilist" style="font-size:0.82rem; margin-bottom:16px;">
+        <li><span>🔧</span><span>Expand root disk 10 GB → 20 GB</span></li>
+        <li><span>🧹</span><span>Disk cleanup + log rotation</span></li>
+        <li><span>📊</span><span>Moodle cron monitoring & alerting</span></li>
+      </ul>
+      <div style="border-top:1px solid var(--border); padding-top:12px;">
+        <div style="font-size:0.75rem; color:var(--muted);">Duration: 1 day</div>
+        <div style="font-size:1.5rem; font-weight:700; color:var(--yellow); margin-top:4px;">RM 500</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:var(--accent);">
+      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent); margin-bottom:10px;">WORKSTREAM B</div>
+      <div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Account Handover</div>
+      <ul class="ilist" style="font-size:0.82rem; margin-bottom:16px;">
+        <li><span>🔑</span><span>KMS re-encryption + RDS snapshot share</span></li>
+        <li><span>📦</span><span>Moodle files + S3 bucket migration</span></li>
+        <li><span>☁️</span><span>New account infra setup + CloudFront</span></li>
+        <li><span>✂️</span><span>Scheduled cutover + DNS update</span></li>
+        <li><span>🏢</span><span>Org removal + join new org + cleanup</span></li>
+      </ul>
+      <div style="border-top:1px solid var(--border); padding-top:12px;">
+        <div style="font-size:0.75rem; color:var(--muted);">Duration: 5–7 days</div>
+        <div style="font-size:1.5rem; font-weight:700; color:var(--accent); margin-top:4px;">RM 2,500</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:var(--green);">
+      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--green); margin-bottom:10px;">WORKSTREAM C</div>
+      <div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Platform Modernisation</div>
+      <ul class="ilist" style="font-size:0.82rem; margin-bottom:16px;">
+        <li><span>🐧</span><span>Debian 11 → Debian 12 (Bookworm)</span></li>
+        <li><span>🐘</span><span>PHP 7.4 → PHP 8.2</span></li>
+        <li><span>🎓</span><span>Moodle 4.1.4 → Moodle 4.5 LTS</span></li>
+        <li><span>🔌</span><span>Plugin compatibility verification</span></li>
+        <li><span>🔒</span><span>IMDSv2 + EBS encryption hardening</span></li>
+      </ul>
+      <div style="border-top:1px solid var(--border); padding-top:12px;">
+        <div style="font-size:0.75rem; color:var(--muted);">Duration: 3–5 days</div>
+        <div style="font-size:1.5rem; font-weight:700; color:var(--green); margin-top:4px;">RM 1,500</div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="background:rgba(88,166,255,0.06); border-color:var(--accent); display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      <div style="font-size:0.8rem; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Full Package — All Three Workstreams</div>
+      <div style="font-size:0.85rem; color:var(--muted); margin-top:4px;">Workstream A is included at no additional cost when combined with B and/or C</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:0.8rem; color:var(--muted); text-decoration:line-through;">RM 4,500</div>
+      <div style="font-size:2rem; font-weight:700; color:var(--accent);">RM 4,000</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 10 — TIMELINE
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <div class="label">Project Timeline</div>
+  <h2>2–3 Week Delivery</h2>
+  <div class="cols cols-2" style="gap:28px; align-items:start;">
+    <div class="card">
+      <table>
+        <tr>
+          <th>Week</th>
+          <th>Activity</th>
+          <th></th>
+        </tr>
+        <tr>
+          <td>Week 1 · Day 1</td>
+          <td>Workstream A: Disk expansion & remediation</td>
+          <td><span class="badge badge-yellow">A</span></td>
+        </tr>
+        <tr>
+          <td>Week 1 · Days 2–5</td>
+          <td>New account setup, RDS re-encryption, S3 migration, EC2 provisioning</td>
+          <td><span class="badge badge-blue">B</span></td>
+        </tr>
+        <tr>
+          <td>Weeks 1–2</td>
+          <td>OS / PHP / Moodle upgrade (parallel on fresh server)</td>
+          <td><span class="badge badge-green">C</span></td>
+        </tr>
+        <tr>
+          <td>Week 2</td>
+          <td>Integration testing, pre-cutover verification</td>
+          <td><span class="badge badge-blue">B</span></td>
+        </tr>
+        <tr>
+          <td>Week 2 (scheduled)</td>
+          <td><strong>Cutover</strong> — 2–4 hour maintenance window</td>
+          <td><span class="badge badge-red">⚡</span></td>
+        </tr>
+        <tr>
+          <td>Week 3</td>
+          <td>Monitoring, stabilisation, source cleanup</td>
+          <td><span class="badge badge-blue">B</span></td>
+        </tr>
+        <tr>
+          <td>Week 3 · end</td>
+          <td>Final handover docs + repo update + sign-off</td>
+          <td><span class="badge badge-green">✓</span></td>
+        </tr>
+      </table>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="card card-sm">
+        <h3>Payment Milestones</h3>
+        <table>
+          <tr><td>On engagement confirmation</td><td style="text-align:right; font-weight:600;">RM 2,000 <span style="color:var(--muted); font-size:0.78rem;">(50%)</span></td></tr>
+          <tr><td>On successful cutover</td><td style="text-align:right; font-weight:600;">RM 1,200 <span style="color:var(--muted); font-size:0.78rem;">(30%)</span></td></tr>
+          <tr><td>On final handover + docs</td><td style="text-align:right; font-weight:600;">RM 800 <span style="color:var(--muted); font-size:0.78rem;">(20%)</span></td></tr>
+        </table>
+      </div>
+      <div class="card card-sm">
+        <h3>What Client Must Provide</h3>
+        <ul class="ilist" style="font-size:0.82rem;">
+          <li><span>🔐</span><span>Root account email + MFA access for <span class="mono">396913716883</span></span></li>
+          <li><span>🌐</span><span>DNS provider login (to update elearning.pribumi.my)</span></li>
+          <li><span>☁️</span><span>New AWS account ID (destination)</span></li>
+          <li><span>🤝</span><span>amancloud.com org removal coordination</span></li>
+          <li><span>🪟</span><span>Agreed maintenance window date/time</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 11 — HANDOVER CHECKLIST
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <div class="label">Handover Checklist</div>
+  <h2>What Changes After Handover</h2>
+  <div class="cols cols-2" style="gap:20px;">
+    <div class="card">
+      <h3>Account Identity — Must Update</h3>
+      <table style="font-size:0.83rem;">
+        <tr><th>Item</th><th>Current</th><th>Action</th></tr>
+        <tr><td>Root email</td><td class="mono" style="font-size:0.75rem;">pribumi@amancloud.com</td><td><span class="badge badge-red">Change</span></td></tr>
+        <tr><td>Billing contact</td><td class="mono" style="font-size:0.75rem;">rahman@amancloud.com</td><td><span class="badge badge-red">Change</span></td></tr>
+        <tr><td>Ops contact</td><td class="mono" style="font-size:0.75rem;">rahman@amancloud.com</td><td><span class="badge badge-red">Change</span></td></tr>
+        <tr><td>Security contact</td><td class="mono" style="font-size:0.75rem;">rahman@amancloud.com</td><td><span class="badge badge-red">Change</span></td></tr>
+        <tr><td>Account alias</td><td>pribumi1</td><td><span class="badge badge-yellow">Optional</span></td></tr>
+        <tr><td>SSH key pair</td><td style="font-size:0.75rem;">rahman@Macbook.local</td><td><span class="badge badge-red">Replace</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>What Breaks on Org Exit — Plan Required</h3>
+      <table style="font-size:0.83rem;">
+        <tr><th>Item</th><th>Impact</th></tr>
+        <tr><td>AWSReservedSSO_* roles (4)</td><td><span class="badge badge-red">Stop working</span></td></tr>
+        <tr><td>Control Tower SCPs</td><td><span class="badge badge-yellow">Detached</span></td></tr>
+        <tr><td>Org CloudTrail</td><td><span class="badge badge-yellow">Stops covering account</span></td></tr>
+        <tr><td>aws-controltower-* roles</td><td><span class="badge badge-yellow">Orphaned</span></td></tr>
+        <tr><td>Consolidated billing</td><td><span class="badge badge-yellow">Standalone billing starts</span></td></tr>
+      </table>
+      <p style="font-size:0.8rem; color:var(--yellow); margin-top:10px;">⚠️ Create an IAM admin user with MFA before initiating org removal. Establish standalone CloudTrail immediately after.</p>
+    </div>
+  </div>
+  <div class="card card-sm" style="margin-top:16px; display:flex; gap:32px; align-items:center;">
+    <div class="stat"><div class="stat-val blue">5</div><div class="stat-lbl">Migration blockers</div></div>
+    <div class="stat"><div class="stat-val yellow">2–3</div><div class="stat-lbl">Weeks to complete</div></div>
+    <div class="stat"><div class="stat-val green">2–4 hrs</div><div class="stat-lbl">Maintenance window</div></div>
+    <div class="stat"><div class="stat-val purple">RM 150</div><div class="stat-lbl">Monthly AWS cost</div></div>
+    <div class="stat"><div class="stat-val red">0</div><div class="stat-lbl">Root MFA (fix first)</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 12 — CLOSE
+═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s12">
+  <div style="text-align:center; max-width:600px; margin:0 auto;">
+    <div class="cover-logo" style="margin:0 auto 28px;">
+      <img src="p.png" alt="Pribumi">
+    </div>
+    <h1 style="font-size:2rem;">Ready to move Pribumi<br>to its new home.</h1>
+    <p class="subtitle" style="margin-top:14px; font-size:0.95rem;">
+      Full assessment data sourced live from AWS API.<br>
+      All documentation available in this repository.
+    </p>
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:32px; flex-wrap:wrap;">
+      <a href="HANDOVER-ASSESSMENT.md" style="text-decoration:none;" target="_blank">
+        <div class="badge badge-blue" style="padding:8px 18px; font-size:0.85rem; cursor:pointer;">🏗 Handover Assessment →</div>
+      </a>
+      <a href="APPLICATION-ASSESSMENT.md" style="text-decoration:none;" target="_blank">
+        <div class="badge badge-purple" style="padding:8px 18px; font-size:0.85rem; cursor:pointer;">🖥 Application Assessment →</div>
+      </a>
+      <a href="BUSINESS-PROPOSAL.md" style="text-decoration:none;" target="_blank">
+        <div class="badge badge-green" style="padding:8px 18px; font-size:0.85rem; cursor:pointer;">📋 Business Proposal →</div>
+      </a>
+    </div>
+    <div style="margin-top:40px; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:left;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.85rem;">
+        <div><span style="color:var(--muted);">Prepared by</span><br><strong>Abdul Rahman Yusmadi</strong></div>
+        <div><span style="color:var(--muted);">Email</span><br><strong>amanyus@gmail.com</strong></div>
+        <div><span style="color:var(--muted);">Account</span><br><span class="mono">396913716883</span></div>
+        <div><span style="color:var(--muted);">Region</span><br><strong>ap-southeast-5 (Malaysia)</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- .deck -->
+
+<!-- NAV -->
+<nav class="nav">
+  <button id="btn-prev" title="Previous">‹</button>
+  <div class="progress-dots" id="dots"></div>
+  <span id="slide-counter">1 / 12</span>
+  <button id="btn-next" title="Next">›</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  const counter = document.getElementById('slide-counter');
+  const dotsEl = document.getElementById('dots');
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('active');
+    cur = (n + total) % total;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('active');
+    counter.textContent = (cur + 1) + ' / ' + total;
+  }
+
+  document.getElementById('btn-next').addEventListener('click', () => goTo(cur + 1));
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(cur - 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') goTo(cur + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                     goTo(cur - 1);
+  });
+</script>
+</body>
+</html>
