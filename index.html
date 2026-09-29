@@ -647,53 +647,58 @@ dataroot= /var/www/moodledata</div>
 ═══════════════════════════════════════════════════════ -->
 <section class="slide" id="s9">
   <div class="label">Business Proposal</div>
-  <h2>Scope of Work & Pricing</h2>
-  <div class="cols cols-2" style="gap:18px; margin-bottom:20px;">
+  <h2>Scope of Work &amp; Pricing</h2>
+  <div class="cols cols-2" style="gap:24px; align-items:start; margin-bottom:24px;">
     <div class="card" style="border-color:var(--accent);">
-      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent); margin-bottom:10px;">WORKSTREAM B</div>
-      <div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Account Handover</div>
-      <ul class="ilist" style="font-size:0.82rem; margin-bottom:16px;">
+      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent); margin-bottom:10px;">ACCOUNT HANDOVER</div>
+      <ul class="ilist" style="font-size:0.88rem; margin-bottom:20px;">
         <li><span>✉️</span><span>Update root email + all alternate contacts</span></li>
         <li><span>🏢</span><span>Remove from amancloud.com org</span></li>
         <li><span>🔐</span><span>Set up root MFA for new owner</span></li>
         <li><span>🧹</span><span>Remove amancloud.com IAM users + SSO roles</span></li>
         <li><span>📋</span><span>Standalone CloudTrail + invite to new org</span></li>
+        <li><span>📦</span><span>Full credentials + DNS handover package</span></li>
+        <li><span>🐧</span><span>OS upgrade: Debian 11 → Debian 12</span></li>
+        <li><span>🐘</span><span>PHP upgrade: 7.4 → 8.2</span></li>
+        <li><span>🎓</span><span>Moodle upgrade: 4.1.4 → 4.5 LTS</span></li>
+        <li><span>🔒</span><span>IMDSv2 enforcement + EBS encryption</span></li>
       </ul>
-      <div style="border-top:1px solid var(--border); padding-top:12px;">
-        <div style="font-size:0.75rem; color:var(--muted);">Duration: 2–3 days</div>
-        <div style="font-size:1.5rem; font-weight:700; color:var(--accent); margin-top:4px;">RM 1,500</div>
+      <div style="border-top:1px solid var(--border); padding-top:16px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:0.75rem; color:var(--muted);">Duration</div>
+          <div style="font-size:1rem; font-weight:600; margin-top:2px;">1 week</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem; color:var(--muted);">Fixed price</div>
+          <div style="font-size:2.4rem; font-weight:700; color:var(--accent);">RM 3,000</div>
+        </div>
       </div>
     </div>
-    <div class="card" style="border-color:var(--green);">
-      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--green); margin-bottom:10px;">WORKSTREAM C</div>
-      <div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Platform Modernisation</div>
-      <ul class="ilist" style="font-size:0.82rem; margin-bottom:16px;">
-        <li><span>🐧</span><span>Debian 11 → Debian 12 (Bookworm)</span></li>
-        <li><span>🐘</span><span>PHP 7.4 → PHP 8.2</span></li>
-        <li><span>🎓</span><span>Moodle 4.1.4 → Moodle 4.5 LTS</span></li>
-        <li><span>🔌</span><span>Plugin compatibility verification</span></li>
-        <li><span>🔒</span><span>IMDSv2 + EBS encryption hardening</span></li>
-      </ul>
-      <div style="border-top:1px solid var(--border); padding-top:12px;">
-        <div style="font-size:0.75rem; color:var(--muted);">Duration: 3–5 days</div>
-        <div style="font-size:1.5rem; font-weight:700; color:var(--green); margin-top:4px;">RM 1,500</div>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="card card-sm">
+        <h3>What's Included</h3>
+        <ul class="ilist" style="font-size:0.83rem;">
+          <li><span>✅</span><span>Full infrastructure assessment (completed)</span></li>
+          <li><span>✅</span><span>Account ownership transfer + org removal</span></li>
+          <li><span>✅</span><span>Platform modernisation (OS, PHP, Moodle)</span></li>
+          <li><span>✅</span><span>Security hardening</span></li>
+          <li><span>✅</span><span>Credentials + DNS handover package</span></li>
+          <li><span>✅</span><span>Documentation updated in GitHub repo</span></li>
+          <li><span>✅</span><span>Zero downtime — no resource migration</span></li>
+        </ul>
       </div>
-    </div>
-  </div>
-  <div class="card" style="background:rgba(88,166,255,0.06); border-color:var(--accent); display:flex; justify-content:space-between; align-items:center;">
-    <div>
-      <div style="font-size:0.8rem; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Full Package — Account Handover + Modernisation</div>
-      <div style="font-size:0.85rem; color:var(--muted); margin-top:4px;">Account Handover + Platform Modernisation</div>
-    </div>
-    <div style="text-align:right;">
-      <div style="font-size:2rem; font-weight:700; color:var(--accent);">RM 3,000</div>
+      <div class="card card-sm">
+        <h3>Payment Milestones</h3>
+        <table>
+          <tr><td>On engagement confirmation</td><td style="text-align:right; font-weight:600;">RM 1,500 <span style="color:var(--muted); font-size:0.78rem;">(50%)</span></td></tr>
+          <tr><td>On org removal &amp; handover complete</td><td style="text-align:right; font-weight:600;">RM 900 <span style="color:var(--muted); font-size:0.78rem;">(30%)</span></td></tr>
+          <tr><td>On final handover + docs</td><td style="text-align:right; font-weight:600;">RM 600 <span style="color:var(--muted); font-size:0.78rem;">(20%)</span></td></tr>
+        </table>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 10 — TIMELINE
-═══════════════════════════════════════════════════════ -->
 <section class="slide" id="s10">
   <div class="label">Project Timeline</div>
   <h2>2–3 Week Delivery</h2>
