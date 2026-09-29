@@ -650,27 +650,28 @@ dataroot= /var/www/moodledata</div>
   <h2>Scope of Work &amp; Pricing</h2>
   <div class="cols cols-2" style="gap:24px; align-items:start; margin-bottom:24px;">
     <div class="card" style="border-color:var(--accent);">
-      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent); margin-bottom:10px;">ACCOUNT HANDOVER</div>
+      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent); margin-bottom:10px;">ACCOUNT HANDOVER &amp; MODERNISATION</div>
       <ul class="ilist" style="font-size:0.88rem; margin-bottom:20px;">
         <li><span>✉️</span><span>Update root email + all alternate contacts</span></li>
         <li><span>🏢</span><span>Remove from amancloud.com org</span></li>
-        <li><span>🔐</span><span>Set up root MFA for new owner</span></li>
+        <li><span>🔐</span><span>Set up root MFA + new payment method</span></li>
         <li><span>🧹</span><span>Remove amancloud.com IAM users + SSO roles</span></li>
         <li><span>📋</span><span>Standalone CloudTrail + invite to new org</span></li>
         <li><span>📦</span><span>Full credentials + DNS handover package</span></li>
         <li><span>🐧</span><span>OS upgrade: Debian 11 → Debian 12</span></li>
         <li><span>🐘</span><span>PHP upgrade: 7.4 → 8.2</span></li>
         <li><span>🎓</span><span>Moodle upgrade: 4.1.4 → 4.5 LTS</span></li>
+        <li><span>🗄️</span><span>Migrate database: RDS → MariaDB on EC2 <span class="badge badge-green" style="margin-left:4px;">saves RM 86/mo</span></span></li>
         <li><span>🔒</span><span>IMDSv2 enforcement + EBS encryption</span></li>
       </ul>
       <div style="border-top:1px solid var(--border); padding-top:16px; display:flex; justify-content:space-between; align-items:center;">
         <div>
           <div style="font-size:0.75rem; color:var(--muted);">Duration</div>
-          <div style="font-size:1rem; font-weight:600; margin-top:2px;">1 week</div>
+          <div style="font-size:1rem; font-weight:600; margin-top:2px;">1–2 weeks</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:0.75rem; color:var(--muted);">Fixed price</div>
-          <div style="font-size:2.4rem; font-weight:700; color:var(--accent);">RM 3,000</div>
+          <div style="font-size:2.4rem; font-weight:700; color:var(--accent);">RM 3,500</div>
         </div>
       </div>
     </div>
@@ -681,18 +682,29 @@ dataroot= /var/www/moodledata</div>
           <li><span>✅</span><span>Full infrastructure assessment (completed)</span></li>
           <li><span>✅</span><span>Account ownership transfer + org removal</span></li>
           <li><span>✅</span><span>Platform modernisation (OS, PHP, Moodle)</span></li>
+          <li><span>✅</span><span>RDS → EC2 MariaDB migration (dump + restore)</span></li>
+          <li><span>✅</span><span>RDS decommission after verified cutover</span></li>
           <li><span>✅</span><span>Security hardening</span></li>
           <li><span>✅</span><span>Credentials + DNS handover package</span></li>
           <li><span>✅</span><span>Documentation updated in GitHub repo</span></li>
-          <li><span>✅</span><span>Zero downtime — no resource migration</span></li>
+          <li><span>✅</span><span>Zero application downtime</span></li>
         </ul>
+      </div>
+      <div class="card card-sm" style="border-color:var(--green);">
+        <h3 style="color:var(--green);">Monthly Savings After Migration</h3>
+        <table>
+          <tr><td>RDS db.t3.micro + storage</td><td style="text-align:right; color:var(--red);">− RM 86.34</td></tr>
+          <tr><td>MariaDB on EC2 (no extra cost)</td><td style="text-align:right; color:var(--green);">RM 0</td></tr>
+          <tr><td style="font-weight:600;">New monthly AWS cost</td><td style="text-align:right; font-weight:700; color:var(--green);">~RM 63/mo</td></tr>
+        </table>
+        <p style="font-size:0.78rem; color:var(--green); margin-top:8px;">💰 Pays back the RM 3,500 fee in ~3 months.</p>
       </div>
       <div class="card card-sm">
         <h3>Payment Milestones</h3>
         <table>
-          <tr><td>On engagement confirmation</td><td style="text-align:right; font-weight:600;">RM 1,500 <span style="color:var(--muted); font-size:0.78rem;">(50%)</span></td></tr>
-          <tr><td>On org removal &amp; handover complete</td><td style="text-align:right; font-weight:600;">RM 900 <span style="color:var(--muted); font-size:0.78rem;">(30%)</span></td></tr>
-          <tr><td>On final handover + docs</td><td style="text-align:right; font-weight:600;">RM 600 <span style="color:var(--muted); font-size:0.78rem;">(20%)</span></td></tr>
+          <tr><td>On engagement confirmation</td><td style="text-align:right; font-weight:600;">RM 1,750 <span style="color:var(--muted); font-size:0.78rem;">(50%)</span></td></tr>
+          <tr><td>On org removal &amp; handover complete</td><td style="text-align:right; font-weight:600;">RM 1,050 <span style="color:var(--muted); font-size:0.78rem;">(30%)</span></td></tr>
+          <tr><td>On final handover + docs</td><td style="text-align:right; font-weight:600;">RM 700 <span style="color:var(--muted); font-size:0.78rem;">(20%)</span></td></tr>
         </table>
       </div>
     </div>
@@ -802,7 +814,7 @@ dataroot= /var/www/moodledata</div>
     <div class="stat"><div class="stat-val blue">5</div><div class="stat-lbl">Handover items</div></div>
     <div class="stat"><div class="stat-val yellow">1</div><div class="stat-lbl">Week to complete</div></div>
     <div class="stat"><div class="stat-val green">0</div><div class="stat-lbl">Downtime required</div></div>
-    <div class="stat"><div class="stat-val purple">RM 150</div><div class="stat-lbl">Monthly AWS cost</div></div>
+    <div class="stat"><div class="stat-val purple">RM 63</div><div class="stat-lbl">Monthly cost (post-RDS)</div></div>
     <div class="stat"><div class="stat-val red">0</div><div class="stat-lbl">Root MFA (fix first)</div></div>
   </div>
 </section>
