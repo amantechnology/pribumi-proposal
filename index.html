@@ -648,66 +648,89 @@ dataroot= /var/www/moodledata</div>
 <section class="slide" id="s9">
   <div class="label">Business Proposal</div>
   <h2>Scope of Work &amp; Pricing</h2>
-  <div class="cols cols-2" style="gap:24px; align-items:start; margin-bottom:24px;">
+  <div class="cols cols-2" style="gap:20px; margin-bottom:16px;">
+
+    <!-- OPTION A -->
     <div class="card" style="border-color:var(--accent);">
-      <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent); margin-bottom:10px;">ACCOUNT HANDOVER &amp; MODERNISATION</div>
-      <ul class="ilist" style="font-size:0.88rem; margin-bottom:20px;">
-        <li><span>✉️</span><span>Update root email + all alternate contacts</span></li>
-        <li><span>🏢</span><span>Remove from amancloud.com org</span></li>
-        <li><span>🔐</span><span>Set up root MFA + new payment method</span></li>
-        <li><span>🧹</span><span>Remove amancloud.com IAM users + SSO roles</span></li>
-        <li><span>📋</span><span>Standalone CloudTrail + invite to new org</span></li>
-        <li><span>📦</span><span>Full credentials + DNS handover package</span></li>
-        <li><span>🐧</span><span>OS upgrade: Debian 11 → Debian 12</span></li>
-        <li><span>🐘</span><span>PHP upgrade: 7.4 → 8.2</span></li>
-        <li><span>🎓</span><span>Moodle upgrade: 4.1.4 → 4.5 LTS</span></li>
-        <li><span>🗄️</span><span>Migrate database: RDS → MariaDB on EC2 <span class="badge badge-green" style="margin-left:4px;">saves RM 86/mo</span></span></li>
-        <li><span>🔒</span><span>IMDSv2 enforcement + EBS encryption</span></li>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--accent);">OPTION A — KEEP RDS</div>
+        <span class="badge badge-blue">Recommended</span>
+      </div>
+      <ul class="ilist" style="font-size:0.83rem; margin-bottom:16px;">
+        <li><span>✉️</span><span>Root email, contacts, billing update</span></li>
+        <li><span>🏢</span><span>Org removal + join new org</span></li>
+        <li><span>🔐</span><span>Root MFA + IAM cleanup</span></li>
+        <li><span>🐧</span><span>Debian 11 → 12, PHP 7.4 → 8.2</span></li>
+        <li><span>🎓</span><span>Moodle 4.1.4 → 4.5 LTS</span></li>
+        <li><span>🔒</span><span>Security hardening</span></li>
+        <li><span>📦</span><span>Full credentials handover package</span></li>
       </ul>
-      <div style="border-top:1px solid var(--border); padding-top:16px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="background:var(--surface2); border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:0.8rem;">
+        <div style="color:var(--muted); margin-bottom:6px; font-weight:600;">Why keep RDS?</div>
+        <ul class="ilist" style="font-size:0.8rem;">
+          <li><span>✅</span><span>Automated backups + point-in-time recovery</span></li>
+          <li><span>✅</span><span>Managed patching, no DBA overhead</span></li>
+          <li><span>✅</span><span>EC2 stays t3.micro — no instance upgrade needed</span></li>
+          <li><span>✅</span><span>DB failure doesn't take down web server</span></li>
+        </ul>
+      </div>
+      <div style="border-top:1px solid var(--border); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <div style="font-size:0.75rem; color:var(--muted);">Duration</div>
-          <div style="font-size:1rem; font-weight:600; margin-top:2px;">1–2 weeks</div>
+          <div style="font-size:0.75rem; color:var(--muted);">Monthly AWS cost</div>
+          <div style="font-size:0.9rem; font-weight:600; color:var(--text);">~RM 150/mo</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:0.75rem; color:var(--muted);">Fixed price</div>
-          <div style="font-size:2.4rem; font-weight:700; color:var(--accent);">RM 3,500</div>
+          <div style="font-size:2rem; font-weight:700; color:var(--accent);">RM 3,000</div>
         </div>
       </div>
     </div>
-    <div style="display:flex; flex-direction:column; gap:14px;">
-      <div class="card card-sm">
-        <h3>What's Included</h3>
-        <ul class="ilist" style="font-size:0.83rem;">
-          <li><span>✅</span><span>Full infrastructure assessment (completed)</span></li>
-          <li><span>✅</span><span>Account ownership transfer + org removal</span></li>
-          <li><span>✅</span><span>Platform modernisation (OS, PHP, Moodle)</span></li>
-          <li><span>✅</span><span>RDS → EC2 MariaDB migration (dump + restore)</span></li>
-          <li><span>✅</span><span>RDS decommission after verified cutover</span></li>
-          <li><span>✅</span><span>Security hardening</span></li>
-          <li><span>✅</span><span>Credentials + DNS handover package</span></li>
-          <li><span>✅</span><span>Documentation updated in GitHub repo</span></li>
-          <li><span>✅</span><span>Zero application downtime</span></li>
+
+    <!-- OPTION B -->
+    <div class="card" style="border-color:var(--green);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.08em; color:var(--green);">OPTION B — MIGRATE TO EC2 DB</div>
+        <span class="badge badge-green">Saves RM 50/mo</span>
+      </div>
+      <ul class="ilist" style="font-size:0.83rem; margin-bottom:16px;">
+        <li><span>✉️</span><span>Root email, contacts, billing update</span></li>
+        <li><span>🏢</span><span>Org removal + join new org</span></li>
+        <li><span>🔐</span><span>Root MFA + IAM cleanup</span></li>
+        <li><span>🐧</span><span>Debian 11 → 12, PHP 7.4 → 8.2</span></li>
+        <li><span>🎓</span><span>Moodle 4.1.4 → 4.5 LTS</span></li>
+        <li><span>🗄️</span><span>Install MariaDB on existing EC2 (t3.small upgrade required)</span></li>
+        <li><span>🔁</span><span>Dump RDS → restore local, update config.php</span></li>
+        <li><span>🔒</span><span>Security hardening + RDS decommission</span></li>
+        <li><span>📦</span><span>Full credentials handover package</span></li>
+      </ul>
+      <div style="background:var(--surface2); border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:0.8rem;">
+        <div style="color:var(--muted); margin-bottom:6px; font-weight:600;">Trade-offs</div>
+        <ul class="ilist" style="font-size:0.8rem;">
+          <li><span>⚠️</span><span>EC2 must upgrade t3.micro → <strong>t3.small</strong> (+RM 35/mo)</span></li>
+          <li><span>⚠️</span><span>Manual DB backups required (no automated RDS backups)</span></li>
+          <li><span>⚠️</span><span>EC2 failure = web + DB both down simultaneously</span></li>
+          <li><span>✅</span><span>Net saving ~RM 50/mo after instance upgrade</span></li>
         </ul>
       </div>
-      <div class="card card-sm" style="border-color:var(--green);">
-        <h3 style="color:var(--green);">Monthly Savings After Migration</h3>
-        <table>
-          <tr><td>RDS db.t3.micro + storage</td><td style="text-align:right; color:var(--red);">− RM 86.34</td></tr>
-          <tr><td>MariaDB on EC2 (no extra cost)</td><td style="text-align:right; color:var(--green);">RM 0</td></tr>
-          <tr><td style="font-weight:600;">New monthly AWS cost</td><td style="text-align:right; font-weight:700; color:var(--green);">~RM 63/mo</td></tr>
-        </table>
-        <p style="font-size:0.78rem; color:var(--green); margin-top:8px;">💰 Pays back the RM 3,500 fee in ~3 months.</p>
-      </div>
-      <div class="card card-sm">
-        <h3>Payment Milestones</h3>
-        <table>
-          <tr><td>On engagement confirmation</td><td style="text-align:right; font-weight:600;">RM 1,750 <span style="color:var(--muted); font-size:0.78rem;">(50%)</span></td></tr>
-          <tr><td>On org removal &amp; handover complete</td><td style="text-align:right; font-weight:600;">RM 1,050 <span style="color:var(--muted); font-size:0.78rem;">(30%)</span></td></tr>
-          <tr><td>On final handover + docs</td><td style="text-align:right; font-weight:600;">RM 700 <span style="color:var(--muted); font-size:0.78rem;">(20%)</span></td></tr>
-        </table>
+      <div style="border-top:1px solid var(--border); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:0.75rem; color:var(--muted);">Monthly AWS cost</div>
+          <div style="font-size:0.9rem; font-weight:600; color:var(--green);">~RM 100/mo</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem; color:var(--muted);">Fixed price</div>
+          <div style="font-size:2rem; font-weight:700; color:var(--green);">RM 3,500</div>
+        </div>
       </div>
     </div>
+
+  </div>
+  <div class="card card-sm" style="background:rgba(88,166,255,0.04); border-color:var(--border); display:flex; gap:32px; align-items:center;">
+    <div class="stat"><div class="stat-val blue">~RM 150</div><div class="stat-lbl">Option A monthly</div></div>
+    <div class="stat"><div class="stat-val green">~RM 100</div><div class="stat-lbl">Option B monthly</div></div>
+    <div class="stat"><div class="stat-val yellow">~7 mo</div><div class="stat-lbl">Option B payback</div></div>
+    <div class="stat"><div class="stat-val purple">1 wk</div><div class="stat-lbl">Option A duration</div></div>
+    <div class="stat"><div class="stat-val purple">1–2 wk</div><div class="stat-lbl">Option B duration</div></div>
   </div>
 </section>
 
